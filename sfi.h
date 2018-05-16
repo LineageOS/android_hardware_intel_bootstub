@@ -54,7 +54,13 @@ struct sfi_table {
 #define E820_NVS	4
 #define E820_UNUSABLE	5
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 extern void sfi_setup_mmap(struct boot_params *bp, memory_map_t *mb_mmap);
 extern int sfi_add_e820_entry(struct boot_params *bp, memory_map_t *mb_mmap, u64 start, u64 size, int type);
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _SFI_H */

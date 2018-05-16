@@ -64,8 +64,8 @@ struct gdt_ptr {
 
 static void *memcpy(void *dest, const void *src, size_t count)
 {
-        char *tmp = dest;
-        const char *s = src;
+        char *tmp = (char *)dest;
+        const char *s = (const char *)src;
 	size_t _count = count / 4;
 
 	while (_count--) {
@@ -81,7 +81,7 @@ static void *memcpy(void *dest, const void *src, size_t count)
 
 static void *memset(void *s, unsigned char c, size_t count)
 {
-        char *xs = s;
+        char *xs = (char *)s;
 	size_t _count = count / 4;
 	unsigned long  _c = c << 24 | c << 16 | c << 8 | c;
 
@@ -149,7 +149,8 @@ static void setup_boot_params(struct boot_params *bp, struct setup_header *sh)
 static u32 bzImage_setup(struct boot_params *bp, struct setup_header *sh)
 {
 	void *cmdline = (void *)BOOT_CMDLINE_OFFSET;
-	struct boot_img_hdr *aosp = (struct boot_img_hdr *)AOSP_HEADER_ADDRESS;
+	void *tmp;
+	boot_img_hdr *aosp = (boot_img_hdr *)AOSP_HEADER_ADDRESS;
 	size_t cmdline_len, extra_cmdline_len;
 	u8 *initramfs, *ptr;
 
@@ -164,7 +165,8 @@ static u32 bzImage_setup(struct boot_params *bp, struct setup_header *sh)
 		*/
 		memset(cmdline, 0, sizeof(aosp->cmdline) + sizeof(aosp->extra_cmdline));
 		memcpy(cmdline, (const void *)aosp->cmdline, cmdline_len);
-		memcpy(cmdline + cmdline_len, (const void *)aosp->extra_cmdline, extra_cmdline_len);
+		tmp = (void *)((long)cmdline + cmdline_len);
+		memcpy(tmp, (const void *)aosp->extra_cmdline, extra_cmdline_len);
 
 		bp->hdr.ramdisk_size = aosp->ramdisk_size;
 
@@ -467,7 +469,7 @@ static void sec_plat_svcs_setup(void)
 int bootstub(void)
 {
 	u32 jmp;
-	struct boot_img_hdr *aosp = (struct boot_img_hdr *)AOSP_HEADER_ADDRESS;
+	boot_img_hdr *aosp = (boot_img_hdr *)AOSP_HEADER_ADDRESS;
 	struct boot_params *bp = (struct boot_params *)BOOT_PARAMS_OFFSET;
 	struct setup_header *sh;
 	u32 imr_size;

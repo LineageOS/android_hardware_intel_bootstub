@@ -67,9 +67,18 @@
          ((u64)(limit & 0x00ff0000) << 32) |    \
          ((u64)(base & 0x00ffffff) << 16) |     \
          ((u64)(limit & 0x0000ffff)))
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 int get_e820_by_bios(void *e820_buf);
 int mid_identify_cpu(void);
 void bs_printk(const char *str);
+int bootstub(void);
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 
 #endif

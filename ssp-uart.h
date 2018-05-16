@@ -27,6 +27,12 @@ struct ssp_reg {
 	vu32 SSPx_FRAME_CNT;  // 0x48
 };
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 extern void bs_ssp_printk(const char *str);
+#ifdef __cplusplus
+}
+#endif
 
 #endif

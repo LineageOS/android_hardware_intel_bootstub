@@ -1,7 +1,7 @@
 CMDLINE_SIZE ?= 0x400
 BOOTSTUB_SIZE ?= 8192
 
-BOOTSTUB_SRC_FILES := bootstub.c sfi.c ssp-uart.c imr_toc.c spi-uart.c
+BOOTSTUB_SRC_FILES := bootstub.cpp sfi.c ssp-uart.c imr_toc.c spi-uart.c
 BOOTSTUB_SRC_FILES_x86 := head.S e820_bios.S
 
 ifeq ($(TARGET_IS_64_BIT),true)
@@ -30,7 +30,7 @@ include $(BUILD_SYSTEM)/binary.mk
 $(LOCAL_INTERMEDIATE_TARGETS): PRIVATE_TARGET_GLOBAL_CFLAGS := $(LOCAL_CFLAGS)
 $(LOCAL_BUILT_MODULE) : PRIVATE_ELF_FILE := $(intermediates)/$(PRIVATE_MODULE).elf
 $(LOCAL_BUILT_MODULE) : PRIVATE_LINK_SCRIPT := $(LOCAL_PATH)/2ndbootloader.lds
-$(LOCAL_BUILT_MODULE) : BOOTSTUB_OBJS := $(patsubst %.c, %.o , $(LOCAL_SRC_FILES))
+$(LOCAL_BUILT_MODULE) : BOOTSTUB_OBJS := $(patsubst %.cpp, %.o , $(patsubst %.c, %.o , $(LOCAL_SRC_FILES)))
 $(LOCAL_BUILT_MODULE) : BOOTSTUB_OBJS += $(patsubst %.S, %.o , $(LOCAL_SRC_FILES_x86))
 $(LOCAL_BUILT_MODULE) : BOOTSTUB_OBJS := $(addprefix $(intermediates)/, $(BOOTSTUB_OBJS))
 $(LOCAL_BUILT_MODULE) : BOOTSTUB_ENTRY := $(BOOTSTUB_ENTRY)

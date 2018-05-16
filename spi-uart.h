@@ -97,6 +97,12 @@ struct mrst_spi_reg {
 #define SPI_INT_RXFI			(1 << 4)
 #define SPI_INT_MSTI			(1 << 5)
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 extern void bs_spi_printk(const char *str);
+#ifdef __cplusplus
+}
+#endif
 
 #endif
